@@ -1,0 +1,349 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.easyshare.jsf.resources.contrib">
+
+ <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+  point="actions">
+  <action id="showEasyShareURL" order="20" label="label.eshare.permalink" type="fancybox"
+          icon="/icons/contextual_menu/share.png" accessKey="k">
+   <category>DOCUMENT_UPPER_ACTION</category>
+   <filter id="easyShareFolderFilter">
+    <rule grant="true">
+     <type>EasyShareFolder</type>
+    </rule>
+   </filter>
+   <properties>
+    <property name="include">/incl/easyshare_url_box.xhtml</property>
+    <property name="ajaxSupport">true</property>
+   </properties>
+  </action>
+
+  <action id="permalinkAction" order="20" label="label.permalink" type="fancybox"
+          icon="/icons/contextual_menu/share.png" accessKey="k">
+   <category>DOCUMENT_UPPER_ACTION</category>
+   <filter id="easySharePermalinkFilter">
+    <rule grant="false">
+     <type>EasyShareFolder</type>
+    </rule>
+   </filter>
+   <properties>
+    <property name="include">/incl/permalink_box.xhtml</property>
+    <property name="ajaxSupport">true</property>
+   </properties>
+  </action>
+ </extension>
+
+ <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="actions">
+  <action id="TAB_CONTENT">
+   <filter-id>denyForEasyShareFolder</filter-id>
+  </action>
+  <action id="TAB_VIEW">
+   <filter-id>denyForEasyShareFolder</filter-id>
+  </action>
+  <action id="TAB_RELATIONS">
+   <filter-id>denyForEasyShareFolder</filter-id>
+  </action>
+ </extension>
+
+ <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
+  <type id="EasyShareFolder">
+   <layouts mode="create">
+    <layout>layout@EasyShareFolder-edit</layout>
+   </layouts>
+   <layouts mode="edit">
+    <layout>layout@EasyShareFolder-edit</layout>
+   </layouts>
+   <layouts mode="view">
+    <layout>layout@EasyShareFolder-view</layout>
+   </layouts>
+   <layouts mode="header">
+    <layout>layout@EasyShareFolder-header</layout>
+   </layouts>
+   <contentViews category="content">
+    <contentView showInExportView="false">document_content</contentView>
+   </contentViews>
+   <contentViews category="trash_content">
+    <contentView showInExportView="false">document_trash_content</contentView>
+   </contentViews>
+  </type>
+ </extension>
+
+ <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager" point="layouts">
+  <layout name="layout@EasyShareFolder-edit">
+   <templates>
+    <template mode="any">/layouts/easyshare_layout_template.xhtml</template>
+   </templates>
+   <rows>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>title</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>description</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>expired</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>hasNotification</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>contactEmail</widget>
+    </row>
+   </rows>
+   <widget name="title" type="text">
+    <labels>
+     <label mode="any">label.dublincore.title</label>
+    </labels>
+    <translated>true</translated>
+    <fields>
+     <field>dc:title</field>
+    </fields>
+    <properties widgetMode="edit">
+     <property name="styleClass">dataInputText</property>
+     <property name="required">true</property>
+    </properties>
+   </widget>
+   <widget name="description" type="textarea">
+    <labels>
+     <label mode="any">label.dublincore.description</label>
+    </labels>
+    <helpLabels>
+     <label mode="any">label.eshare.description.help</label>
+    </helpLabels>
+    <translated>true</translated>
+    <fields>
+     <field>dc:description</field>
+    </fields>
+    <properties widgetMode="edit">
+     <property name="styleClass">dataInputText</property>
+    </properties>
+   </widget>
+   <widget name="expired" type="datetime">
+    <labels>
+     <label mode="any">label.dublincore.expirationDate</label>
+    </labels>
+    <helpLabels>
+     <label mode="any">label.eshare.expirationDate.help</label>
+    </helpLabels>
+    <translated>true</translated>
+    <fields>
+     <field>dc:expired</field>
+    </fields>
+    <properties widgetMode="edit">
+     <property name="required">true</property>
+    </properties>
+   </widget>
+   <widget name="hasNotification" type="checkbox">
+    <labels>
+     <label mode="any">label.eshare.hasNotification</label>
+    </labels>
+    <helpLabels>
+     <label mode="any">label.eshare.hasNotification.help</label>
+    </helpLabels>
+    <translated>true</translated>
+    <fields>
+     <field>eshare:hasNotification</field>
+    </fields>
+   </widget>
+   <widget name="contactEmail" type="text">
+    <labels>
+     <label mode="any">label.eshare.contactEmail</label>
+    </labels>
+    <helpLabels>
+     <label mode="any">label.eshare.contactEmail.help</label>
+    </helpLabels>
+    <translated>true</translated>
+    <fields>
+     <field>eshare:contactEmail</field>
+    </fields>
+    <properties widgetMode="any">
+     <property name="defaultValue">
+      #{currentUser.getEmail()}
+     </property>
+    </properties>
+   </widget>
+  </layout>
+  <layout name="layout@EasyShareFolder-view">
+   <templates>
+    <template mode="any">/layouts/easyshare_layout_template.xhtml</template>
+   </templates>
+   <rows>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>title_and_permlink</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>description</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>expired</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>hasNotification</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+     </properties>
+     <widget>contactEmail</widget>
+    </row>
+   </rows>
+   <widget name="title_and_permlink" type="title_and_permlink">
+    <labels>
+     <label mode="any">label.eshare.title.permlink</label>
+    </labels>
+    <translated>true</translated>
+    <fields>
+     <field></field>
+     <field>uid:major_version</field>
+     <field>uid:minor_version</field>
+    </fields>
+   </widget>
+   <widget name="description" type="textarea">
+    <labels>
+     <label mode="any">label.dublincore.description</label>
+    </labels>
+    <translated>true</translated>
+    <fields>
+     <field>dc:description</field>
+    </fields>
+   </widget>
+   <widget name="expired" type="datetime">
+    <labels>
+     <label mode="any">label.dublincore.expirationDate</label>
+    </labels>
+    <translated>true</translated>
+    <fields>
+     <field>dc:expired</field>
+    </fields>
+   </widget>
+   <widget name="hasNotfication" type="checkbox">
+    <labels>
+     <label mode="any">label.eshare.hasNotfication</label>
+    </labels>
+    <helpLabels>
+     <label mode="any">label.eshare.hasNotification.help</label>
+    </helpLabels>
+    <translated>true</translated>
+    <fields>
+     <field>eshare:hasNotfication</field>
+    </fields>
+   </widget>
+   <widget name="contactEmail" type="text">
+    <labels>
+     <label mode="any">label.eshare.contactEmail</label>
+    </labels>
+    <translated>true</translated>
+    <fields>
+     <field>eshare:contactEmail</field>
+    </fields>
+   </widget>
+  </layout>
+  <layout name="layout@EasyShareFolder-header">
+   <templates>
+    <template mode="any">/layouts/layout_div_template.xhtml</template>
+   </templates>
+   <rows>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">3</property>
+     </properties>
+     <widget>header_title_and_permlink</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">3</property>
+     </properties>
+     <widget>collection_header_description</widget>
+    </row>
+    <row>
+     <properties mode="any">
+      <property name="nxl_colspan_0">1</property>
+      <property name="nxl_colspan_1">1</property>
+      <property name="nxl_colspan_2">1</property>
+     </properties>
+     <widget>creator</widget>
+     <widget>expired</widget>
+     <widget>contactEmail</widget>
+    </row>
+   </rows>
+   <widget name="collection_header_description" type="textarea">
+    <fields>
+     <field>dc:description</field>
+    </fields>
+    <labels>
+     <label mode="any"></label>
+    </labels>
+    <properties mode="any">
+     <property name="styleClass">
+      currentDocumentDescription quote
+     </property>
+    </properties>
+   </widget>
+   <widget name="creator" type="text">
+    <labels>
+     <label mode="any">label.dublincore.creator</label>
+    </labels>
+    <translated>true</translated>
+    <fields>
+     <field>dc:creator</field>
+    </fields>
+    <properties widgetMode="view">
+     <property name="title">Creator</property>
+     <property name="styleClass">detail user headerCreator</property>
+    </properties>
+   </widget>
+   <widget name="expired" type="datetime">
+    <labels>
+     <label mode="any">label.dublincore.expirationDate</label>
+    </labels>
+    <translated>true</translated>
+    <fields>
+     <field>dc:expired</field>
+    </fields>
+    <properties widgetMode="view">
+     <property name="title">Expiration Date</property>
+     <property name="styleClass">tag label label-light headerExpiration</property>
+    </properties>
+   </widget>
+   <widget name="contactEmail" type="text">
+    <labels>
+     <label mode="any">label.eshare.contactEmail</label>
+    </labels>
+    <translated>true</translated>
+    <fields>
+     <field>eshare:contactEmail</field>
+    </fields>
+    <properties widgetMode="view">
+     <property name="title">Creator's Email</property>
+     <property name="styleClass">detail tag headerEmail</property>
+    </properties>
+   </widget>
+  </layout>
+ </extension>
+</component>
